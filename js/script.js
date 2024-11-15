@@ -1,10 +1,9 @@
 'use strict'
 
 const field = document.querySelector('.field')
-let chips = field.querySelectorAll('.chip')
+const startBtn = document.querySelector('.start')
 
-/* let direction = 'right'
-let indexEmptyBlock */
+let chips = field.querySelectorAll('.chip')
 
 const checkEmptyChip = (index) => {
     if (chips[index+1] && index%4 !=3 && chips[index+1].classList.contains('empty')) {
@@ -21,44 +20,64 @@ const checkEmptyChip = (index) => {
     }      
 }
 
-const moveEmptyBlock = (indexEmptyBlock, direction) => {
-    //console.log(indexEmptyBlock);
-    //console.log(direction);   
-    if (direction=='left') {
-        chips[indexEmptyBlock-1].before(chips[indexEmptyBlock])
-        console.log("empty влево")        
+const moveEmptyBlock = (indexEmptyBlock, direction) => {    
+    if (direction ==='left') {
+        chips[indexEmptyBlock-1].before(chips[indexEmptyBlock])      
     }
-    if (direction=='right') {
-        chips[indexEmptyBlock].before(chips[indexEmptyBlock+1])
-        console.log("empty вправо")        
+    if (direction ==='right') {
+        chips[indexEmptyBlock].before(chips[indexEmptyBlock+1])       
     }
-    if (direction=='up') {
+    if (direction ==='up') {
         chips[indexEmptyBlock-4].before(chips[indexEmptyBlock])
-        chips[indexEmptyBlock-1].after(chips[indexEmptyBlock-4])
-        console.log("empty вверх")        
+        chips[indexEmptyBlock-1].after(chips[indexEmptyBlock-4])        
     }
-    if (direction=='down') {
+    if (direction ==='down') {
         chips[indexEmptyBlock].before(chips[indexEmptyBlock+4])
-        chips[indexEmptyBlock+3].after(chips[indexEmptyBlock])
-        console.log("empty вниз")        
+        chips[indexEmptyBlock+3].after(chips[indexEmptyBlock])        
     }
     chips = field.querySelectorAll('.chip')
     if (chips[15].classList.contains('empty')) {
+        //сделать запуск функции для проверки результата!!!
         console.log('надо проверить решение');        
     }
+}
+
+const mixChip = () => {
+    let lastEmptyIndex=15
+    let way = ''
+    let arrDirection = []
+    let emptyIndex = 15     
+    
+    for(let i = 0; i<75; i++) {
+        arrDirection = []  
+        chips.forEach((item, index) => {          
+        if(item.classList.contains('empty'))   
+            emptyIndex=index;                      
+        })
+        if (chips[emptyIndex-4] && emptyIndex-4 !=lastEmptyIndex) arrDirection.push('up')
+        if (chips[emptyIndex+1] && emptyIndex%4 !=3 && emptyIndex+1 != lastEmptyIndex) arrDirection.push('right')
+        if (chips[emptyIndex+4] && emptyIndex+4 !=lastEmptyIndex) arrDirection.push('down')
+        if (chips[emptyIndex-1] && emptyIndex%4 !=0 && emptyIndex-1 != lastEmptyIndex) arrDirection.push('left')
+        way = arrDirection[Math.floor(Math.random()*arrDirection.length)]
+        lastEmptyIndex = emptyIndex
+        moveEmptyBlock(emptyIndex, way)
+    }
+    console.log('ДА НАЧНЕТСЯ ИГРА!!');
 }
 
 
 field.addEventListener('click', (e)=> { 
     if (e.target.classList.contains('chip'))  {    
         chips.forEach((item, index)=> {                      
-            if (e.target == item) {
-                //console.log(index);                
+            if (e.target === item) {                             
                 checkEmptyChip(index)
             }
         })        
     }
 })
 
+startBtn.addEventListener('click', ()=> {
+    mixChip()
+})
 
 
