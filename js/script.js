@@ -47,8 +47,10 @@ const mixChip = () => {
     let way = ''
     let arrDirection = []
     let emptyIndex = 15     
-    
-    for(let i = 0; i<75; i++) {
+    let count = 0
+
+    let idInterval = setInterval(()=> {
+        count++   
         arrDirection = []  
         chips.forEach((item, index) => {          
         if(item.classList.contains('empty'))   
@@ -61,15 +63,18 @@ const mixChip = () => {
         way = arrDirection[Math.floor(Math.random()*arrDirection.length)]
         lastEmptyIndex = emptyIndex
         moveEmptyBlock(emptyIndex, way)
-    }
-    console.log('ДА НАЧНЕТСЯ ИГРА!!');
+        if (count===100) {
+            clearInterval(idInterval)
+            console.log('ДА НАЧНЕТСЯ ИГРА!!');
+        }
+    }, 10) 
 }
 
 
 field.addEventListener('click', (e)=> { 
-    if (e.target.classList.contains('chip'))  {    
+    if (e.target.classList.contains('chip') || e.target.closest('.chip'))  {          
         chips.forEach((item, index)=> {                      
-            if (e.target === item) {                             
+            if (e.target === item || e.target.parentElement === item) {                             
                 checkEmptyChip(index)
             }
         })        
