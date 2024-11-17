@@ -5,6 +5,26 @@ const startBtn = document.querySelector('.start')
 
 let chips = field.querySelectorAll('.chip')
 
+chips[1].style.backgroundPosition = '-125px 0'
+chips[2].style.backgroundPosition = '-250px 0'
+chips[3].style.backgroundPosition = '-375px 0'
+chips[4].style.backgroundPosition = '0 -125px '
+chips[5].style.backgroundPosition = '-125px -125px'
+chips[6].style.backgroundPosition = '-250px -125px'
+chips[7].style.backgroundPosition = '-375px -125px'
+chips[8].style.backgroundPosition = '0 -250px'
+chips[9].style.backgroundPosition = '-125px -250px'
+chips[10].style.backgroundPosition = '-250px -250px'
+chips[11].style.backgroundPosition = '-250px -375px'
+chips[12].style.backgroundPosition = '0 -375px'
+chips[13].style.backgroundPosition = '-125px -375px'
+chips[14].style.backgroundPosition = '-250px -375px'
+
+
+
+
+
+
 const checkEmptyChip = (index) => {
     if (chips[index+1] && index%4 !=3 && chips[index+1].classList.contains('empty')) {
         moveEmptyBlock(index+1, 'left')      
@@ -63,16 +83,16 @@ const mixChip = () => {
         way = arrDirection[Math.floor(Math.random()*arrDirection.length)]
         lastEmptyIndex = emptyIndex
         moveEmptyBlock(emptyIndex, way)
-        if (count===100) {
+        if (count===150) {
             clearInterval(idInterval)
             console.log('ДА НАЧНЕТСЯ ИГРА!!');
         }
-    }, 10) 
+    }, 5) 
 }
 
 
 field.addEventListener('click', (e)=> { 
-    if (e.target.classList.contains('chip') || e.target.closest('.chip'))  {          
+    if (e.target.closest('.chip'))  {          
         chips.forEach((item, index)=> {                      
             if (e.target === item || e.target.parentElement === item) {                             
                 checkEmptyChip(index)

@@ -5,7 +5,7 @@
     font-family: sans-serif;
 }
 
-.field {
+.field, .field-img{
     box-sizing: content-box;
     width: 500px;
     height: 500px;
@@ -33,10 +33,26 @@
     font-weight: 700;
     cursor: pointer;
     border-radius: 6px;
+    color: #ffffff;
+
+    background-image: url("../img/1.jpg"); 
+    background-repeat: no-repeat;
+
 }
 
 .empty{
     border: none;
+    background-image: none;
     background-color: #e6e6e6;
     cursor: default;    
+}
+
+
+.chip-img {
+    width: 25%;
+    height: 25%;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-image: url("../img/1.jpg"); 
+    background-repeat: no-repeat;
 }
