@@ -2,6 +2,7 @@
 
 const field = document.querySelector('.field')
 const startBtn = document.querySelector('.start')
+const newGameBtn = document.querySelector('.new-game')
 
 let chips = field.querySelectorAll('.chip')
 
@@ -20,23 +21,93 @@ chips[12].style.backgroundPosition = '0 -375px'
 chips[13].style.backgroundPosition = '-125px -375px'
 chips[14].style.backgroundPosition = '-250px -375px'
 
+const animate = ({timing, draw, duration}) => {
 
-
-
-
+    let start = performance.now();
+  
+    requestAnimationFrame(function animate(time) {
+        // timeFraction изменяется от 0 до 1
+        let timeFraction = (time - start) / duration;
+        if (timeFraction > 1) timeFraction = 1;
+    
+        // вычисление текущего состояния анимации
+        let progress = timing(timeFraction);
+    
+        draw(progress); // отрисовать её
+    
+        if (timeFraction < 1) {
+            requestAnimationFrame(animate);
+        }  
+    });
+  }
 
 const checkEmptyChip = (index) => {
-    if (chips[index+1] && index%4 !=3 && chips[index+1].classList.contains('empty')) {
-        moveEmptyBlock(index+1, 'left')      
+    if (chips[index+1] && index%4 !=3 && chips[index+1].classList.contains('empty')) {        
+        animate({
+            duration: 80,
+            timing(timeFraction) {
+              return timeFraction;
+            },
+            draw(progress) {
+                chips[index].style.transform = 'translateX(' + progress*100 + '%)' 
+            }
+        });
+
+        setTimeout(()=>{
+            chips[index].style.transform = ''               
+            moveEmptyBlock(index+1, 'left')                
+        },100)    
     }
+
     if (chips[index-1] && index%4 !=0 && chips[index-1].classList.contains('empty')) {
-        moveEmptyBlock(index-1, 'right')      
+        animate({
+            duration: 80,
+            timing(timeFraction) {
+              return timeFraction;
+            },
+            draw(progress) {
+                chips[index].style.transform = 'translateX(' + progress*(-100) + '%)'
+            }
+        });
+
+        setTimeout(()=>{
+            chips[index].style.transform = ''               
+            moveEmptyBlock(index-1, 'right')               
+        },100)               
     }
+
     if (chips[index+4] && chips[index+4].classList.contains('empty')) {     
-        moveEmptyBlock(index+4, 'up')        
+        animate({
+            duration: 80,
+            timing(timeFraction) {
+              return timeFraction;
+            },
+            draw(progress) {
+                chips[index].style.transform = 'translateY(' + progress*100 + '%)' 
+            }
+        });
+
+        setTimeout(()=>{
+            chips[index].style.transform = ''               
+            moveEmptyBlock(index+4, 'up')               
+        },100)                
     }
+    
     if (chips[index-4] && chips[index-4].classList.contains('empty')) {
-        moveEmptyBlock(index-4, 'down')        
+        animate({
+            duration: 80,
+            timing(timeFraction) {
+              return timeFraction;
+            },
+            draw(progress) {
+                chips[index].style.transform = 'translateY(' + progress*(-100) + '%)'
+            }
+        });
+
+        setTimeout(()=>{
+            chips[index].style.transform = ''               
+            moveEmptyBlock(index-4, 'down')              
+        },100)              
     }      
 }
 
@@ -56,9 +127,27 @@ const moveEmptyBlock = (indexEmptyBlock, direction) => {
         chips[indexEmptyBlock+3].after(chips[indexEmptyBlock])        
     }
     chips = field.querySelectorAll('.chip')
-    if (chips[15].classList.contains('empty')) {
-        //сделать запуск функции для проверки результата!!!
-        console.log('надо проверить решение');        
+    if (chips[15].classList.contains('empty')) {        
+        let counter = 0
+        chips.forEach((item, index)=> {
+            if (item.id == index) counter++ 
+        })        
+        if (counter==16) {
+            field.removeEventListener('click', getIndex)
+            field.style.backgroundImage = 'url("./img/1.jpg")'; 
+            newGameBtn.style.display = 'block'
+            startBtn.style.display = 'none'
+            chips.forEach(item=> item.style.cursor = 'default')
+            animate({
+                duration: 500,
+                timing(timeFraction) {
+                return timeFraction;
+                },
+                draw(progress) {
+                    chips.forEach(item => item.style.opacity = (1-progress))                
+                }
+            })
+        }             
     }
 }
 
@@ -90,8 +179,7 @@ const mixChip = () => {
     }, 5) 
 }
 
-
-field.addEventListener('click', (e)=> { 
+const getIndex = (e)=> {
     if (e.target.closest('.chip'))  {          
         chips.forEach((item, index)=> {                      
             if (e.target === item || e.target.parentElement === item) {                             
@@ -99,10 +187,25 @@ field.addEventListener('click', (e)=> {
             }
         })        
     }
-})
+}
+
+field.addEventListener('click', getIndex)
 
 startBtn.addEventListener('click', ()=> {
     mixChip()
+    field.addEventListener('click', getIndex)
 })
 
-
+newGameBtn.addEventListener('click', ()=> {    
+    field.style.backgroundImage = ''
+    newGameBtn.style.display = 'none'
+    startBtn.style.display = 'block'
+    chips.forEach(item=> {        
+        item.style.opacity = 1     
+        if (item.id == 15) {
+            item.style.cursor = 'default'
+        } else {
+            item.style.cursor = 'pointer'
+        }
+    })  
+})
