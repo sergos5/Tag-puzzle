@@ -6,20 +6,23 @@ const newGameBtn = document.querySelector('.new-game')
 
 let chips = field.querySelectorAll('.chip')
 
-chips[1].style.backgroundPosition = '-125px 0'
-chips[2].style.backgroundPosition = '-250px 0'
-chips[3].style.backgroundPosition = '-375px 0'
-chips[4].style.backgroundPosition = '0 -125px '
-chips[5].style.backgroundPosition = '-125px -125px'
-chips[6].style.backgroundPosition = '-250px -125px'
-chips[7].style.backgroundPosition = '-375px -125px'
-chips[8].style.backgroundPosition = '0 -250px'
-chips[9].style.backgroundPosition = '-125px -250px'
-chips[10].style.backgroundPosition = '-250px -250px'
-chips[11].style.backgroundPosition = '-250px -375px'
-chips[12].style.backgroundPosition = '0 -375px'
-chips[13].style.backgroundPosition = '-125px -375px'
-chips[14].style.backgroundPosition = '-250px -375px'
+const fieldWidth = field.clientWidth
+const fieldeHight = field.clientHeight
+
+const gePicture = (source) => {
+    
+    chips.forEach((chip, index)=> {
+        if (index !== chips.length){
+            chip.style.backgroundImage = `url(${source})`
+            chip.style.backgroundSize = `${fieldWidth}px ${fieldeHight}px`      
+            let x = (index%4)*fieldWidth/4
+            let y = (parseInt(index/4)%4)*fieldeHight/4             
+            chip.style.backgroundPosition = `-${x}px -${y}px`            
+        }       
+    })    
+}
+
+gePicture('./img/2.jpg')
 
 const animate = ({timing, draw, duration}) => {
 
@@ -134,7 +137,8 @@ const moveEmptyBlock = (indexEmptyBlock, direction) => {
         })        
         if (counter==16) {
             field.removeEventListener('click', getIndex)
-            field.style.backgroundImage = 'url("./img/1.jpg")'; 
+            field.style.backgroundImage = 'url("./img/2.jpg")'; 
+            field.style.backgroundSize = `${fieldWidth}px ${fieldeHight}px`
             newGameBtn.style.display = 'block'
             startBtn.style.display = 'none'
             chips.forEach(item=> item.style.cursor = 'default')
@@ -176,7 +180,7 @@ const mixChip = () => {
             clearInterval(idInterval)
             console.log('ДА НАЧНЕТСЯ ИГРА!!');
         }
-    }, 5) 
+    }, 3) 
 }
 
 const getIndex = (e)=> {
@@ -189,7 +193,7 @@ const getIndex = (e)=> {
     }
 }
 
-field.addEventListener('click', getIndex)
+//field.addEventListener('click', getIndex)
 
 startBtn.addEventListener('click', ()=> {
     mixChip()
@@ -209,3 +213,5 @@ newGameBtn.addEventListener('click', ()=> {
         }
     })  
 })
+
+
